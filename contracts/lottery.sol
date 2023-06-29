@@ -1,16 +1,16 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.4.0;
 
 contract Lottery {
     address public manager; // variable to store manager's address
-    address payable[] public participants; // we are storing participant's address
+    address[] public participants; // we are storing participant's address
 
-    constructor() {
-        manager = payable(msg.sender);
+    constructor() public {
+        manager = msg.sender;
     }
 
     function enterLottery() public payable {
         // require(msg.value > 0.01 ether);
-        participants.push(payable(msg.sender));
+        participants.push(msg.sender);
     }
 
     function pickWinner() public {
@@ -20,9 +20,12 @@ contract Lottery {
         // select a random participant
         uint index = random() % participants.length;
 
-        participants[index].transfer(address(this).balance);
+        address  winner = (address(participants[index]));
+        uint256 balance = address(this).balance;
 
-        participants = new address payable[](0);
+        winner.transfer(balance);
+
+        participants = new address[](0);
     }
 
     function random() private view returns (uint256) {
